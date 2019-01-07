@@ -1,0 +1,55 @@
+---
+- hosts: all
+  vars:
+    prefix: '*'
+    list: 
+      - "a"
+      - "b"
+      - "c"
+      - "d"
+    list2: ['Apple','Banana','Cat', 'Dog']
+    my_joined_list: "{{ list | join(prefix+',') }}"
+  tasks:
+    - name: Basic Template Example
+      template:
+        src: basic_template.j2
+        dest: /tmp/basic_template.txt
+
+    - name: Multiple Template Example
+      template:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+      with_items:
+        - {src: 'basic_template.j2', dest: '/tmp/template1.out'}
+        - {src: 'basic_template.j2', dest: '/tmp/template2.out'}
+        - {src: 'basic_template.j2', dest: '/tmp/template3.out'}
+     
+    - name: Registra variabile
+      shell: uptime
+      register: myuptime
+      ignore_errors: True
+    
+    - name: Stampa variabile registrata
+      shell: echo {{myuptime}}
+
+    - name: Use encrypted file
+      copy:
+        src:  'myfile.txt'
+        dest: '/tmp/mydescrypted_file.txt'
+
+    - name: Take variable from group vars
+      copy:
+        dest: "/tmp/variable_from_group_vars.txt"
+        content: "{{ntp_server}}"
+
+  roles:
+    - mywebserver
+- hosts: masters
+  tasks:
+    - name: Task for a Master node
+      copy:
+        src: file.lock 
+        dest: /tmp/master.lock
+        owner: root
+        group: root
+        mode: u+rw,g-wx,o-rwx 

@@ -1,0 +1,12 @@
+---
+apache:
+  centos:
+    package: httpd
+    service: httpd
+
+apache:
+  debian:
+    package: apache2
+    service: apache2
+
+docroot: /var/www/html
