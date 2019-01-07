@@ -10,12 +10,12 @@
     list2: ['Apple','Banana','Cat', 'Dog']
     my_joined_list: "{{ list | join(prefix+',') }}"
   tasks:
-    - name: Basic Template Example
+    - name: Try Basic Template
       template:
         src: basic_template.j2
-        dest: /tmp/basic_template.txt
+        dest: /tmp/try_basic_template.txt
 
-    - name: Multiple Template Example
+    - name: Try Multiple Template
       template:
         src: "{{ item.src }}"
         dest: "{{ item.dest }}"
@@ -24,29 +24,30 @@
         - {src: 'basic_template.j2', dest: '/tmp/template2.out'}
         - {src: 'basic_template.j2', dest: '/tmp/template3.out'}
      
-    - name: Registra variabile
+    - name: Register Variable
       shell: uptime
       register: myuptime
       ignore_errors: True
     
-    - name: Stampa variabile registrata
+    - name: Echo registered variables
       shell: echo {{myuptime}}
 
-    - name: Use encrypted file
+    - name: Try Encrypted File
       copy:
         src:  'myfile.txt'
-        dest: '/tmp/mydescrypted_file.txt'
+        dest: '/tmp/try_encrypted_file.txt'
 
-    - name: Take variable from group vars
+    - name: Try Variable From Group Vars
       copy:
-        dest: "/tmp/variable_from_group_vars.txt"
+        dest: "/tmp/try_variable_from_group_vars.txt"
         content: "{{ntp_server}}"
 
   roles:
     - mywebserver
+
 - hosts: masters
   tasks:
-    - name: Task for a Master node
+    - name: Try Copy Files
       copy:
         src: file.lock 
         dest: /tmp/master.lock
